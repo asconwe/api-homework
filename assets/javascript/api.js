@@ -23,10 +23,11 @@ $( document ).ready(function(){
     };
     
 
-    $('#submit').click(function(){
+    $('#form').submit(function(event){
         var newTopic = $('#newTopic').val();
         topics.push(newTopic);
         displayButtons();
+        event.preventDefault();
     });
 
     // On the click of a button
