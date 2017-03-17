@@ -14,18 +14,12 @@ $( document ).ready(function(){
         setClickHandler();
     };
 
-    // API endpoint URL
-    var apiBase = 'http://api.giphy.com/v1/gifs/search?q=';
     // The user's query
     var userQuery = 'star wars';
-    // API Parameters
-    var apiParams = '&limit=10';
-    // API key
-    var apiKey = '&api_key=dc6zaTOxFJmzC';
     
     // combine all variable into one Query URL
     function getQueryURL() {
-        return apiBase + userQuery  + apiParams + apiKey;
+        return 'http://api.giphy.com/v1/gifs/search?q=' + userQuery  + '&limit=10&api_key=dc6zaTOxFJmzC';
     };
     
 
@@ -48,15 +42,26 @@ $( document ).ready(function(){
             }).done(function(response){
                 $('#displayGifs').empty();
                 console.log(response);
-                var still;
-                var animate;
                 response.data.forEach(function(gif){
-                    $('#displayGifs').append('<img class="gif" data-state="still" src="' + gif.images.fixed_height_still.url + '"/>')
-                })
+                    var still = gif.images.fixed_height_still.url;
+                    var animate = gif.images.fixed_height.url;
+                    var image = $('<img class="gif" data-state="still" src="' + still + '"/>')
+                    image.data('animate', animate);
+                    image.data('still', still);
+                    $('#displayGifs').append(image);
+                    $('#displayGifs').append('<h3>Rated ' + gif.rating + '</h3>');
+                });
                 $('.gif').click(function(){
-                    
+                    if ($(this).data('state') === 'still') {
+                        $(this).data('state', 'animate');
+                        $(this).attr('src', $(this).data('animate'));
+                    } else {
+                        $(this).data('state', 'still');
+                        $(this).attr('src', $(this).data('still'));
+                    };
                 });
             });
+
         });
     };
     // Display the buttons on page-load
